@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1764236165987-0
+      author: system
+      runInTransaction: false
+      changes:
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS warehouse_db;
+            endDelimiter: "\n"
+  - changeSet:
+      id: 1770376366126-1
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_product
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: sku
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  name: created_at
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                  name: updated_at
+                  type: TIMESTAMP
+              - column:
+                  name: version
+                  type: INT
+            tableName: product
+  - changeSet:
+      id: 1770376366126-2
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: sku
+            constraintName: UC_PRODUCT_SKU
+            tableName: product
+  - changeSet:
+      id: 1770376366126-3
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: sku
+            indexName: idx_sku
+            tableName: product
+
