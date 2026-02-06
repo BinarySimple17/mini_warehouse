@@ -6,25 +6,36 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "product", indexes = @Index(name = "idx_sku", columnList = "sku"))
-public class Product {
+@Table(name = "catalog")
+public class Catalog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "shop_id", nullable = false)
+    private Long shopId = 0L;
+
     @Column(nullable = false)
-    private String name;
+    private BigDecimal price;
 
-    private String description;
+    @Column(nullable = false)
+    private Integer quantity;
 
-    @Column(nullable = false, unique = true)
-    private String sku;
+    @Column(nullable = false)
+    private Integer reservedQuantity = 0;
+
+    @Column(nullable = false)
+    private Boolean active = true;
 
     @CreationTimestamp
     @Column(
@@ -41,14 +52,21 @@ public class Product {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;
 
-
     //lock
     @Version
     @Column(name = "version")
     private Integer version;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "catalog_id")
-    private Catalog catalog;
+    @OneToMany(mappedBy = "catalog")
+    private List<Product> products = new ArrayList<>();
+
+
+//    @PrePersist
+//    protected void onCreate() {
+//
+//        if (shopId == null) {
+//            shopId = 0L;
+//        }
+//    }
 
 }

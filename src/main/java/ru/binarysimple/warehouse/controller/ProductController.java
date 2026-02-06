@@ -1,4 +1,4 @@
-package ru.binarysimple.warehouse;
+package ru.binarysimple.warehouse.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.Valid;
@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/warehouse/products")
 @RequiredArgsConstructor
-public class ProductResource {
+public class ProductController {
 
     private final ProductService productService;
 
