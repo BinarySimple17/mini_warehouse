@@ -1,0 +1,95 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: warehouse
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5440/${DB_NAME:test_db}
+    username: ${DB_USERNAME:test_user}
+    password: ${DB_PASSWORD:test_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: warehouse_db
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    liquibase-schema: public
+    default-schema: warehouse_db
+    enabled: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    #    properties:
+    #      security.protocol: SASL_PLAINTEXT
+    #      sasl.mechanism: PLAIN
+    #      sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="${KAFKA_USER:user1}" password="${KAFKA_PASSWORD}";
+
+    consumer:
+      group-id: notification-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+endpoints:
+  api-gateway: http://localhost:8090
+#  users-service: http://localhost:8100
+
+logging:
+  level:
+    ru.binarysimple: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springdoc: WARN
+    io.swagger: WARN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info, readiness, prometheus
+  endpoint:
+    health:
+      show-details: always
+      exclude: kafka
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
+info:
+  app:
+    name: "Warehouse Service"
+
+app:
+  kafka:
+    topics:
+#      order-events: order.events
+      user-events: user.events
+#      bill-events: bill.events
