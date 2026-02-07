@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1770469626351-1
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: shop_id
+              - column:
+                  name: product_id
+            indexName: idx_shop_product
+            tableName: catalog
+            unique: true
+

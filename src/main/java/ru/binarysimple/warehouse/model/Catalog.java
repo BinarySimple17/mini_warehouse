@@ -8,14 +8,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "catalog")
+@Table(name = "catalog", indexes = @Index(name = "idx_shop_product", columnList = "shopId, product_id", unique = true))
 public class Catalog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

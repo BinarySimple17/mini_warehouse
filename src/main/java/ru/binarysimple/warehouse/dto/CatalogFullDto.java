@@ -4,7 +4,6 @@ import lombok.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * DTO for {@link ru.binarysimple.warehouse.model.Catalog}
@@ -19,5 +18,5 @@ public class CatalogFullDto {
     Boolean active;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    List<ProductDto> products;
+    ProductDto product;
 }
