@@ -47,8 +47,8 @@ public class Product {
     @Column(name = "version")
     private Integer version;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "catalog_id")
-    private Catalog catalog;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "catalog_id")
+//    private Catalog catalog;
 
 }

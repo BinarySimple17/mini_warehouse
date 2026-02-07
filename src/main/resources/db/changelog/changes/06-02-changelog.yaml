@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1770381533932-1
+      id: 1770388577385-1
       author: Professional (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -54,27 +54,19 @@ databaseChangeLog:
               - column:
                   name: version
                   type: INT
+              - column:
+                  name: product_id
+                  type: BIGINT
             tableName: catalog
   - changeSet:
-      id: 1770381533932-2
-      author: Professional (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addColumn:
-            columns:
-              - column:
-                  name: catalog_id
-                  type: BIGINT
-            tableName: product
-  - changeSet:
-      id: 1770381533932-3
+      id: 1770388577385-2
       author: Professional (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: catalog_id
-            baseTableName: product
-            constraintName: FK_PRODUCT_ON_CATALOG
+            baseColumnNames: product_id
+            baseTableName: catalog
+            constraintName: FK_CATALOG_ON_PRODUCT
             referencedColumnNames: id
-            referencedTableName: catalog
+            referencedTableName: product
 
