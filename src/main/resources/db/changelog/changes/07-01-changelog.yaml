@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1770467292085-1
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_processed_event_id
+                  name: event_id
+                  type: VARCHAR(36)
+              - column:
+                  name: processed_at
+                  type: DATETIME
+            tableName: processed_event_id
+

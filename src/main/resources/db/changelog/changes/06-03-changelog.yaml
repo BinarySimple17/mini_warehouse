@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1770390287590-1
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_outbox_events
+                  name: event_id
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: parent_id
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: parent_type
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: event_type
+                  type: VARCHAR(255)
+              - column:
+                  name: payload
+                  type: TEXT
+              - column:
+                  name: topic
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: published
+                  type: BOOLEAN
+              - column:
+                  name: published_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: retry_count
+                  type: INT
+              - column:
+                  name: error_message
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  name: created_at
+                  type: TIMESTAMP
+            tableName: outbox_events
+
