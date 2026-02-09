@@ -60,15 +60,7 @@ public class OutboxServiceImpl implements OutboxService {
     public void processOutbox() {
         List<OutboxEvent> events = outboxRepository.findUnpublishedEvents(retries);
         for (OutboxEvent event : events) {
-//            try {
-//                kafkaTemplate.send(event.getTopic(), event.getParentId(), event.getPayload()).get();
-//                event.setPublished(true);
-//                event.setPublishedAt(LocalDateTime.now());
-//                event.setErrorMessage(null);
-//                outboxRepository.saveAndFlush(event);
-//            } catch (Exception e) {
-//                log.error("Failed to relay outbox event: {}", event.getEventId(), e);
-//            }
+
             try {
                 CompletableFuture<?> future =
                         kafkaTemplate.send(event.getTopic(), event.getParentId(), event.getPayload());

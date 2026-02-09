@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import ru.binarysimple.warehouse.dto.CatalogFullDto;
 import ru.binarysimple.warehouse.dto.OrderResultDto;
 import ru.binarysimple.warehouse.filter.CatalogFilter;
+import ru.binarysimple.warehouse.kafka.WarehouseCompensationResponseEvent;
 import ru.binarysimple.warehouse.kafka.WarehouseReservationResponseEvent;
 
 import java.io.IOException;
@@ -30,4 +31,6 @@ public interface CatalogService {
     void deleteMany(List<Long> ids);
 
     WarehouseReservationResponseEvent reserveOrder(OrderResultDto order, UUID sagaId);
+
+    WarehouseCompensationResponseEvent compensateOrder(OrderResultDto order, UUID sagaId);
 }

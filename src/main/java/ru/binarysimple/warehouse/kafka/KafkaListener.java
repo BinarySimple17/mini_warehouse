@@ -47,4 +47,31 @@ public class KafkaListener {
             log.error("Failed to process request: {}", WarehouseReservationRequestEvent.class, e);
         }
     }
+
+    @org.springframework.kafka.annotation.KafkaListener(
+            id = "warehouseListener",
+            topics = "warehouse.compensate.request")
+    @Transactional
+    public void handleWarehouseCompensateRequest(String message) {
+
+        log.debug("handleWarehouseCompensateRequest from kafka {}", message);
+
+        try {
+            WarehouseCompensationRequestEvent event = objectMapper.readValue(message, WarehouseCompensationRequestEvent.class);
+
+            WarehouseCompensationResponseEvent responseEvent = catalogService.compensateOrder(event.getOrder(), event.getSagaId());
+            outboxService.saveEvent(
+                    responseEvent.getSuccess()?EventType.WAREHOUSE_COMPENSATION_COMPLETED:EventType.WAREHOUSE_COMPENSATION_FAILED,
+                    event.getSagaId().toString(),
+                    ParentType.SAGA,
+                    responseEvent,
+                    "warehouse.compensate.response"
+            );
+
+            log.info("Request compensation processed: {}", message);
+
+        } catch (Exception e) {
+            log.error("Failed to process compensation request: {}", WarehouseReservationRequestEvent.class, e);
+        }
+    }
 }

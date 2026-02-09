@@ -13,6 +13,7 @@ import ru.binarysimple.warehouse.dto.CatalogFullDto;
 import ru.binarysimple.warehouse.dto.OrderPositionDto;
 import ru.binarysimple.warehouse.dto.OrderResultDto;
 import ru.binarysimple.warehouse.filter.CatalogFilter;
+import ru.binarysimple.warehouse.kafka.WarehouseCompensationResponseEvent;
 import ru.binarysimple.warehouse.kafka.WarehouseReservationResponseEvent;
 import ru.binarysimple.warehouse.mapper.CatalogMapper;
 import ru.binarysimple.warehouse.model.Catalog;
@@ -152,4 +153,56 @@ public class CatalogServiceImpl implements CatalogService {
 
         return responseEvent;
     }
+
+    @Override
+    public WarehouseCompensationResponseEvent compensateOrder(OrderResultDto order, UUID sagaId) {
+
+        List<Catalog> catalogsResult = new ArrayList<>();
+
+        WarehouseCompensationResponseEvent responseEvent = WarehouseCompensationResponseEvent.builder()
+                .sagaId(sagaId)
+                .success(false)
+                .order(order)
+                .build();
+
+        try {
+
+            Map<Long, OrderPositionDto> orderPositions = order.getOrderPositions().stream()
+                    .collect(java.util.stream.Collectors.toMap(
+                            OrderPositionDto::getProductId,
+                            position -> position
+                    ));
+
+            List<Long> productIds = new java.util.ArrayList<>(orderPositions.keySet());
+
+            List<Catalog> catalogsSource = catalogRepository.findByShopIdAndProductIdIn(order.getShopId(), productIds);
+
+
+            for (Catalog catalog : catalogsSource) {
+                OrderPositionDto position = orderPositions.get(catalog.getProduct().getId());
+                if (position != null) {
+                    catalog.setQuantity(catalog.getQuantity() + position.getQuantity());
+                    catalogsResult.add(catalog);
+                }
+            }
+
+            //если все позиции нашлись и компенсировались, то сохраняем и считаем, что успех
+            if (catalogsResult.size() == order.getOrderPositions().size()) {
+                catalogRepository.saveAll(catalogsResult);
+                responseEvent.setSuccess(true);
+                log.info("Request compensation processed eventId: {}", responseEvent.getEventId());
+            } else {
+                responseEvent.setMessage("Request NOT processed [not all positions reserved]");
+                log.info("Request compensation NOT processed [not all positions reserved] eventId: {}", responseEvent.getEventId());
+            }
+
+
+        } catch (Exception e) {
+            log.error("Error compensate Order: {}", e.getMessage());
+            responseEvent.setMessage(e.getMessage());
+        }
+
+        return responseEvent;
+    }
+
 }
