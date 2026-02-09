@@ -2,3 +2,6 @@ databaseChangeLog:
   - includeAll:
       path: changes/
       relativeToChangelogFile: true
+  - include:
+      file: data/load-products.yaml
+      relativeToChangelogFile: true

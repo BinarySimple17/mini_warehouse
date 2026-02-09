@@ -128,12 +128,29 @@ public class CatalogServiceImpl implements CatalogService {
 
             List<Catalog> catalogsSource = catalogRepository.findByShopIdAndProductIdIn(order.getShopId(), productIds);
 
+            //todo добавить блокировку на запись
+
+            boolean reservationOk = true;
 
             for (Catalog catalog : catalogsSource) {
                 OrderPositionDto position = orderPositions.get(catalog.getProduct().getId());
-                if (position != null && catalog.getQuantity() >= position.getQuantity()) {
-                    catalog.setQuantity(catalog.getQuantity() - position.getQuantity());
-                    catalogsResult.add(catalog);
+                if (position == null || catalog.getQuantity() < position.getQuantity()) {
+                    reservationOk = false;
+                    break;
+                }
+            }
+
+            if (reservationOk) {
+                reservationOk = order.getOrderPositions().size() == catalogsSource.size();
+            }
+
+            if (reservationOk) {
+                for (Catalog catalog : catalogsSource) {
+                    OrderPositionDto position = orderPositions.get(catalog.getProduct().getId());
+                    if (position != null && catalog.getQuantity() >= position.getQuantity()) {
+                        catalog.setQuantity(catalog.getQuantity() - position.getQuantity());
+                        catalogsResult.add(catalog);
+                    }
                 }
             }
 
@@ -177,12 +194,29 @@ public class CatalogServiceImpl implements CatalogService {
 
             List<Catalog> catalogsSource = catalogRepository.findByShopIdAndProductIdIn(order.getShopId(), productIds);
 
+            //todo добавить блокировку на запись
+
+            boolean reservationOk = true;
 
             for (Catalog catalog : catalogsSource) {
                 OrderPositionDto position = orderPositions.get(catalog.getProduct().getId());
-                if (position != null) {
-                    catalog.setQuantity(catalog.getQuantity() + position.getQuantity());
-                    catalogsResult.add(catalog);
+                if (position == null) {
+                    reservationOk = false;
+                    break;
+                }
+            }
+
+            if (reservationOk) {
+                reservationOk = order.getOrderPositions().size() == catalogsSource.size();
+            }
+
+            if (reservationOk) {
+                for (Catalog catalog : catalogsSource) {
+                    OrderPositionDto position = orderPositions.get(catalog.getProduct().getId());
+                    if (position != null) {
+                        catalog.setQuantity(catalog.getQuantity() + position.getQuantity());
+                        catalogsResult.add(catalog);
+                    }
                 }
             }
 

@@ -22,7 +22,7 @@ public class KafkaListener {
     private final OutboxService outboxService;
 
     @org.springframework.kafka.annotation.KafkaListener(
-            id = "warehouseListener",
+            id = "warehouseListenerReserve",
             topics = "warehouse.reserve.request")
     @Transactional
     public void handleWarehouseRequest(String message) {
@@ -49,7 +49,7 @@ public class KafkaListener {
     }
 
     @org.springframework.kafka.annotation.KafkaListener(
-            id = "warehouseListener",
+            id = "warehouseListenerCompensate",
             topics = "warehouse.compensate.request")
     @Transactional
     public void handleWarehouseCompensateRequest(String message) {
