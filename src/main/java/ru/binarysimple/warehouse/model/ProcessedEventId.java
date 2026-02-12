@@ -4,8 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +21,10 @@ public class ProcessedEventId {
     @Column(name = "event_id", length = 36)
     private String eventId;
 
-    @Column(name = "processed_at")
+    @CreationTimestamp
+    @Column(name = "processed_at",
+            updatable = false,
+            nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime processedAt;
-
 }
